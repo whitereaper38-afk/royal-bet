@@ -1,132 +1,283 @@
-index.html
-login.html
-admin.html
-casino.html
-sports.html
-style.css
-script.js
-git init
-git add .
-git commit -m "First commit"
-git branch -M main
-git remote add origin https://github.com/whitereaper38-afk/royal-bet.git
-git push -u origin main
 <!DOCTYPE html>
-<html lang="sq">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Royal-Bet</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<h1>🎰 Royal-Bet</h1>
-<a href="login.html"><button>Login</button></a>
-<a href="casino.html"><button>Kazino</button></a>
-<a href="sports.html"><button>Bastore</button></a>
-<a href="admin.html"><button>Admin</button></a>
-</body>
-</html>h
-<h2>Login</h2>
-<input id="username" placeholder="Username">
-<button onclick="login()">Hyr</button>
-<p id="loginMsg"></p>
-<script src="script.js"></script>
-<h2>Admin Panel</h2>
-<input id="user" placeholder="Username">
-<input id="amount" placeholder="Kredi">
-<button onclick="addCredits()">Dërgo Kredi</button>
-<br>
-<button onclick="createUser()">Krijo User</button>
-<p id="adminMsg"></p>
-<script src="script.js"></script>
-<h2>Kazino</h2>
-<p id="balance"></p>
-<button onclick="dice()">Dice</button>
-<button onclick="coinflip()">Coinflip</button>
-<button onclick="wheel()">Wheel</button>
-<button onclick="slots()">Slots</button>
-<button onclick="mines()">Mines</button>
-<button onclick="crash()">Crash</button>
-<button onclick="roulette()">Roulette</button>
-<p id="result"></p>
-<script src="script.js"></script>
-<h2>Bastore Sportive</h2>
-<p id="balance"></p>
-<button onclick="bet('Futboll')">Bast Futboll</button>
-<button onclick="bet('Basketboll')">Bast Basketboll</button>
-<p id="result"></p>
-<script src="script.js"></script>
+<title>NovaBet</title>
+
+<style>
+
 body{
-  font-family: Arial;
-  text-align: center;
-  background:#0f172a;
-  color:white;
+font-family:Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+margin:0;
 }
-button{
-  padding:12px 20px;
-  margin:10px;
-  font-size:18px;
-  background:#facc15;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+
+header{
+background:#020617;
+padding:20px;
+font-size:28px;
 }
+
+nav{
+background:#1e293b;
+padding:10px;
+}
+
+nav button{
+margin:5px;
+padding:10px 20px;
+border:none;
+border-radius:5px;
+background:#22c55e;
+color:white;
+cursor:pointer;
+}
+
+.container{
+margin-top:40px;
+}
+
 input{
-  padding:8px;
-  margin:5px;
-  font-size:16px;
+padding:10px;
+margin:5px;
+border-radius:5px;
+border:none;
 }
-let users = JSON.parse(localStorage.getItem("users")) || {};
-let currentUser = localStorage.getItem("currentUser");
-const adminUser = "admin";
+
+.hidden{
+display:none;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+margin:10px;
+border-radius:10px;
+display:inline-block;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>NovaBet 🎰</header>
+
+<nav>
+<button onclick="show('home')">Home</button>
+<button onclick="show('login')">Login</button>
+<button onclick="show('register')">Register</button>
+</nav>
+
+<div id="home" class="container">
+<h1>Welcome to NovaBet</h1>
+<p>Sports Betting & Casino Demo</p>
+</div>
+
+<div id="register" class="container hidden">
+<h2>Register</h2>
+<input id="regUser" placeholder="Username"><br>
+<input id="regPass" type="password" placeholder="Password"><br>
+<button onclick="register()">Create</button>
+<p id="regMsg"></p>
+</div>
+
+<div id="login" class="container hidden">
+<h2>Login</h2>
+<input id="logUser" placeholder="Username"><br>
+<input id="logPass" type="password" placeholder="Password"><br>
+<button onclick="login()">Login</button>
+<p id="logMsg"></p>
+</div>
+
+<div id="dashboard" class="container hidden">
+<h2>User Dashboard</h2>
+<p id="userName"></p>
+<p>Balance: <span id="balance"></span> €</p>
+
+<button onclick="bet()">Bet 5€</button>
+<button onclick="logout()">Logout</button>
+</div>
+
+<div id="admin" class="container hidden">
+
+<h2>Admin Panel</h2>
+
+<input id="targetUser" placeholder="Username"><br>
+<input id="amount" placeholder="Credits"><br>
+
+<button onclick="addCredit()">Add Credits</button>
+<button onclick="removeCredit()">Remove Credits</button>
+
+<p id="adminMsg"></p>
+
+</div>
+
+<script>
+
+if(!localStorage.getItem("admin")){
+
+localStorage.setItem("admin",JSON.stringify({
+password:"1234"
+}))
+
+}
+
+function show(page){
+
+let pages=["home","login","register","dashboard","admin"]
+
+pages.forEach(p=>{
+document.getElementById(p).classList.add("hidden")
+})
+
+document.getElementById(page).classList.remove("hidden")
+
+}
+
+function register(){
+
+let user=document.getElementById("regUser").value
+let pass=document.getElementById("regPass").value
+
+if(!user||!pass)return
+
+let data={
+password:pass,
+balance:20
+}
+
+localStorage.setItem(user,JSON.stringify(data))
+
+document.getElementById("regMsg").innerText="Account created"
+
+}
 
 function login(){
-  let u = document.getElementById("username").value;
-  if(!users[u]){
-    users[u]={balance:100};
-  }
-  localStorage.setItem("users",JSON.stringify(users));
-  localStorage.setItem("currentUser",u);
-  currentUser=u;
-  document.getElementById("loginMsg").innerText="Hyrja e suksesshme!";
-  updateBalance();
+
+let user=document.getElementById("logUser").value
+let pass=document.getElementById("logPass").value
+
+if(user==="admin"){
+
+let admin=JSON.parse(localStorage.getItem("admin"))
+
+if(pass===admin.password){
+
+show("admin")
+return
+
 }
 
-function createUser(){
-  let u=prompt("Shkruaj username per userin e ri:");
-  if(u){
-    users[u]={balance:100};
-    localStorage.setItem("users",JSON.stringify(users));
-    document.getElementById("adminMsg").innerText="User "+u+" u krijua!";
-  }
 }
 
-function addCredits(){
-  let u=document.getElementById("user").value;
-  let a=parseInt(document.getElementById("amount").value);
-  if(users[u]){
-    users[u].balance+=a;
-    localStorage.setItem("users",JSON.stringify(users));
-    document.getElementById("adminMsg").innerText=a+" kredita u shtuan tek "+u;
-  }
+let data=JSON.parse(localStorage.getItem(user))
+
+if(!data || data.password!==pass){
+
+document.getElementById("logMsg").innerText="Wrong login"
+
+return
+
 }
 
-function updateBalance(){
-  if(currentUser && users[currentUser])
-    document.getElementById("balance").innerText="Balance: "+users[currentUser].balance;
+localStorage.setItem("currentUser",user)
+
+loadDashboard()
+
+show("dashboard")
+
 }
 
-function result(msg){document.getElementById("result").innerText=msg; save();}
-function save(){localStorage.setItem("users",JSON.stringify(users)); updateBalance();}
+function loadDashboard(){
 
-function dice(){users[currentUser].balance+=(Math.random()>0.5?10:-10); result("Dice!");}
-function coinflip(){users[currentUser].balance+=(Math.random()>0.5?10:-10); result("Coinflip!");}
-function wheel(){users[currentUser].balance+=(Math.random()>0.7?20:-10); result("Wheel!");}
-function slots(){users[currentUser].balance+=(Math.random()>0.8?50:-10); result("Slots!");}
-function mines(){users[currentUser].balance+=(Math.random()>0.75?30:-10); result("Mines!");}
-function crash(){users[currentUser].balance+=(Math.random()>0.7?40:-10); result("Crash!");}
-function roulette(){users[currentUser].balance+=(Math.random()>0.5?25:-10); result("Roulette!");}
-function bet(sport){users[currentUser].balance+=(Math.random()>0.5?20:-20); result("Bast "+sport+"!");}
+let user=localStorage.getItem("currentUser")
 
-updateBalance();
+let data=JSON.parse(localStorage.getItem(user))
+
+document.getElementById("userName").innerText="User: "+user
+
+document.getElementById("balance").innerText=data.balance
+
+}
+
+function bet(){
+
+let user=localStorage.getItem("currentUser")
+
+let data=JSON.parse(localStorage.getItem(user))
+
+if(data.balance<5){
+
+alert("No balance")
+
+return
+
+}
+
+data.balance-=5
+
+localStorage.setItem(user,JSON.stringify(data))
+
+loadDashboard()
+
+}
+
+function logout(){
+
+localStorage.removeItem("currentUser")
+
+show("home")
+
+}
+
+function addCredit(){
+
+let user=document.getElementById("targetUser").value
+let amount=parseInt(document.getElementById("amount").value)
+
+let data=JSON.parse(localStorage.getItem(user))
+
+if(!data){
+
+document.getElementById("adminMsg").innerText="User not found"
+return
+
+}
+
+data.balance+=amount
+
+localStorage.setItem(user,JSON.stringify(data))
+
+document.getElementById("adminMsg").innerText="Credits added"
+
+}
+
+function removeCredit(){
+
+let user=document.getElementById("targetUser").value
+let amount=parseInt(document.getElementById("amount").value)
+
+let data=JSON.parse(localStorage.getItem(user))
+
+if(!data){
+
+document.getElementById("adminMsg").innerText="User not found"
+return
+
+}
+
+data.balance-=amount
+
+localStorage.setItem(user,JSON.stringify(data))
+
+document.getElementById("adminMsg").innerText="Credits removed"
+
+}
+
+</script>
+
+</body>
+</html>
